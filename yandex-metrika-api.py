@@ -14,16 +14,39 @@ print('?'.join((AUTH_URL, urlencode(auth_url_data))))
 
 TOKEN = 'AQAAAAAcVNslAATIrN2nnub4HktyujxM8jwrzuk'
 
-def get_counter_list(token):
+class YandexMetrikaUser:
+    def __init__(self, token):
+        self.token = token
+
+
+    def get_counter_list(token):
+        headers = {
+            'Authorization': 'OAuth {}'.format(self.token),
+            'Content-Type': 'application/json'
+        }
+        response = requests.get('https://api-metrika.yandex.ru/management/v1/counters',
+                               headers=headers, params={'pretty': 1})
+
+        return response.json()
+
+# counters = get_counter_list(TOKEN)
+# print(counters)
+
+def get_counter_visits(counter_id, token):
+
     headers = {
         'Authorization': 'OAuth {}'.format(token),
         'Content-Type': 'application/json'
     }
-    response = request.get('https://api-metrika.yandex.ru/management/v1/counters',
-                           headers=headers, params={'pretty': 1})
 
+    params={
+        'id': counter_id,
+        'metrics': 'ya:s:visits'
+    }
+
+    response = requests.get('https://api-metrika.yandex.ru/management/v1/data', params,
+                             headers=headers)
     return response.json()
 
-counters = get_counter_list(TOKEN)
-print(counters)
-
+visits = get_counter_visits('47502862', TOKEN)
+print(visits)
