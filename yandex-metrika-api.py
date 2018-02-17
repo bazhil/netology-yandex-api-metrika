@@ -1,4 +1,5 @@
 import requests
+from pprint import pprint
 
 from urllib.parse import urlencode
 
@@ -17,36 +18,51 @@ TOKEN = 'AQAAAAAcVNslAATIrN2nnub4HktyujxM8jwrzuk'
 class YandexMetrikaUser:
     def __init__(self, token):
         self.token = token
+        self.counter_id = 0
 
-
-    def get_counter_list(token):
+    def get_counter(self):
         headers = {
             'Authorization': 'OAuth {}'.format(self.token),
             'Content-Type': 'application/json'
         }
         response = requests.get('https://api-metrika.yandex.ru/management/v1/counters',
-                               headers=headers, params={'pretty': 1})
+                               headers=headers)
+        if response.status_code == 200:
+            resp_dict = response.json()
+            self.counter_id = resp_dict['counters'][0]['id']
+            # pprint(response.json())
+        # return response.json()
 
-        return response.json()
+    def get_counter_visits(self):
+        # headers = {
+        #     'Authorization': 'OAuth {}'.format(self.token),
+        #     'Content-Type': 'application/json'
+        # }
+
+        params = {
+            'oauth_token': self.token,
+            # 'id': self.counter_id,
+            # 'metrics': 'ya:s:visits'
+        }
+
+        response = requests.get('https://api-metrika.yandex.ru/stat/v1/data',
+                                params=params)
+        print(response.status_code)
+        print(response.text)
+        print(response.headers)
+
+        if response.status_code == 200:
+            pprint(response.json())
+        # return response.json()
+
+metrika = YandexMetrikaUser(TOKEN)
+metrika.get_counter()
+metrika.get_counter_visits()
 
 # counters = get_counter_list(TOKEN)
 # print(counters)
 
-def get_counter_visits(counter_id, token):
 
-    headers = {
-        'Authorization': 'OAuth {}'.format(token),
-        'Content-Type': 'application/json'
-    }
 
-    params={
-        'id': counter_id,
-        'metrics': 'ya:s:visits'
-    }
-
-    response = requests.get('https://api-metrika.yandex.ru/management/v1/data', params,
-                             headers=headers)
-    return response.json()
-
-visits = get_counter_visits('47502862', TOKEN)
-print(visits)
+    # visits = get_counter_visits('47502862', TOKEN)
+    # print(visits)
