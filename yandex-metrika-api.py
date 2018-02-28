@@ -44,7 +44,7 @@ class YandexMetrikaUser:
         params = {
             'oauth_token': self.token,
             'id': self.counter_id,
-            'metrics': 'ya:s:visits'
+            'metrics': 'ym:s:visits'
         }
 
         response = requests.get('https://api-metrika.yandex.ru/stat/v1/data',
