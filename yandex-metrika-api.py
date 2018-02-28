@@ -22,6 +22,7 @@ class YandexMetrikaUser:
 
     def get_counter(self):
         headers = {
+            'oauth_token': self.token,
             'Authorization': 'OAuth {}'.format(self.token),
             'Content-Type': 'application/json'
         }
@@ -34,15 +35,16 @@ class YandexMetrikaUser:
         # return response.json()
 
     def get_counter_visits(self):
-        # headers = {
-        #     'Authorization': 'OAuth {}'.format(self.token),
-        #     'Content-Type': 'application/json'
-        # }
+        headers = {
+            'oauth_token': self.token,
+            'Authorization': 'OAuth {}'.format(self.token),
+            'Content-Type': 'application/json'
+        }
 
         params = {
             'oauth_token': self.token,
-            # 'id': self.counter_id,
-            # 'metrics': 'ya:s:visits'
+            'id': self.counter_id,
+            'metrics': 'ya:s:visits'
         }
 
         response = requests.get('https://api-metrika.yandex.ru/stat/v1/data',
@@ -66,3 +68,4 @@ metrika.get_counter_visits()
 
     # visits = get_counter_visits('47502862', TOKEN)
     # print(visits)
+
